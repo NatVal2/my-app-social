@@ -7,25 +7,32 @@ import {UsersType} from "./UsersContainer";
 type UsersProps = {
     onChangePageHandler: (activePage: number)=> void
 }
-class Users extends React.Component<UsersType & UsersProps>{
-
-    constructor(maxDisplayPage: number, minDisplayPage: number) {
-        super();
+type PageProps = {
+    maxDisplayPage : number
+    minDisplayPage: number
+}
+class Users extends React.Component< UsersType & UsersProps, PageProps>{
+    constructor(props: UsersType & UsersProps) {
+        super(props);
+        this.state = {
+            maxDisplayPage: 10,
+            minDisplayPage: 1,
+        }
     }
     render(){
         const{users, changeFollowStatusAC, onChangePageHandler } = this.props
 
         const pages: number[]= []
-        let maxDisplayPage = 10
-        let minDisplayPage = 1
         //const pageCounter = Math.ceil(totalCount / pageSize)
-        for (let i = minDisplayPage; i <= maxDisplayPage; i++ ){
+        for (let i = this.state.minDisplayPage; i <= this.state.maxDisplayPage; i++ ){
             pages.push(i)
         }
 
         const nextPagesUsers = () => {
-            maxDisplayPage += 5
-            minDisplayPage += 5
+            this.setState((state) => ({
+                maxDisplayPage: state.maxDisplayPage + 5,
+                minDisplayPage: state.minDisplayPage + 5
+            }))
         }
         return <div>
             <div>
