@@ -1,19 +1,42 @@
 import React from "react";
-import {userType} from "../../data/reducers/userReducer";
 import defaultPhoto from "../../assets/images/Download.jpeg"
 import './user.css'
+import {UsersType} from "./UsersContainer";
 
-export type UsersType ={
-    users: userType[]
-    changeFollowStatusAC:(userID: number, follow: boolean)=> void
-    setUsersFromServiceAC: (userData: userType[], totalCount: number, error: null)=> void
+
+type UsersProps = {
+    onChangePageHandler: (activePage: number)=> void
 }
+class Users extends React.Component<UsersType & UsersProps>{
 
-class Users extends React.Component<UsersType>{
+    constructor(maxDisplayPage: number, minDisplayPage: number) {
+        super();
+    }
     render(){
-        const{users, changeFollowStatusAC}= this.props
+        const{users, changeFollowStatusAC, onChangePageHandler } = this.props
+
+        const pages: number[]= []
+        let maxDisplayPage = 10
+        let minDisplayPage = 1
+        //const pageCounter = Math.ceil(totalCount / pageSize)
+        for (let i = minDisplayPage; i <= maxDisplayPage; i++ ){
+            pages.push(i)
+        }
+
+        const nextPagesUsers = () => {
+            maxDisplayPage += 5
+            minDisplayPage += 5
+        }
         return <div>
-        {users.map(u => <div key={u.id} className={"user"}>
+            <div>
+                <button onClick={nextPagesUsers}>{`<`}</button>
+                {pages.map(p => {
+                    return <button key={p} onClick={() => onChangePageHandler(p)}>{p}</button>
+                })}
+                <button onClick={nextPagesUsers}>{`>`}</button>
+
+            </div>
+            {users.map(u => <div key={u.id} className={"user"}>
             <img alt={"userAva not found"} src={u.photos.small || defaultPhoto}/>
             <h3>{u.name}</h3>
             {u.followed ?
